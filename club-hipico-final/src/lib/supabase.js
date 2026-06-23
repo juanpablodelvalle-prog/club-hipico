@@ -6,7 +6,7 @@ import { createClient } from '@supabase/supabase-js'
 )*/
 export const supabase = createClient(
   'https://ejpaejblrsjgbvcvyoog.supabase.co',
-  'sb_publishable_82atGDAByGNTbXDVt236mg_TdMs662_'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqcGFlamJscnNqZ2J2Y3Z5b29nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTU3OTIsImV4cCI6MjA5NzM3MTc5Mn0.3-BiUXPleC3OKk7AyUaJHQxQsYAPH6mIUIgVAmugtbc'
 )
 // ─── AUTH ────────────────────────────────────────────────────
 export const signIn = (email, password) =>
