@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd club-hipico-final && npm install && npm run build",
+  "outputDirectory": "club-hipico-final/dist",
+  "installCommand": "cd club-hipico-final && npm install"
+}
