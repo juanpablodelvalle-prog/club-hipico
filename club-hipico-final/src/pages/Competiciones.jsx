@@ -201,12 +201,12 @@ export default function Competiciones() {
         </div>
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns: selId ? '220px 1fr' : '1fr', gap:14 }} id="comps-grid">
+      <div style={{ display:'grid', gridTemplateColumns: selId ? '220px 1fr' : '1fr', gap:14 }}>
         {/* Lista */}
         <div>
           {comps.map(c => (
             <div key={c.id} onClick={() => selComp(c.id)}
-              style={{ background:'#161820', border:`1.5px solid ${selId===c.id?'#c9a96e50':'#1e2130'}`, borderRadius:10, padding:'12px 14px', marginBottom:8, cursor:'pointer', background: selId===c.id?'#1a1c28':'#161820' }}>
+              style={{ background: selId===c.id ? '#1a1c28' : '#161820', border:`1.5px solid ${selId===c.id?'#c9a96e50':'#1e2130'}`, borderRadius:10, padding:'12px 14px', marginBottom:8, cursor:'pointer' }}>
               <div style={{ fontSize:14, fontWeight:500, color:'#f0ead6', marginBottom:3 }}>{c.nombre}</div>
               <div style={{ fontSize:12, color:'#6b7280', marginBottom:7 }}>{modalLabel(c.modalidad)} · {c.fecha}</div>
               <Badge type={c.estado}/>
@@ -244,10 +244,9 @@ export default function Competiciones() {
               {bloq && <div style={{ marginTop:10, padding:'8px 12px', background:'#1a1010', borderRadius:8, fontSize:12, color:'#f87171' }}>🔒 Bloqueada — no se pueden modificar participantes</div>}
             </Card>
 
-            {/* Rondas */}
             <Card>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
-                <CardTitle style={{ margin:0 }}>Rondas ({rondas.length})</CardTitle>
+                <div style={{ fontSize:14, fontWeight:500, color:'#f0ead6' }}>Rondas ({rondas.length})</div>
                 <button style={{ ...S.bs, fontSize:12, padding:'8px 12px' }} onClick={addRon}>+ Añadir</button>
               </div>
               {rondas.length === 0 && <div style={{ color:'#6b7280', fontSize:13 }}>Sin rondas</div>}
@@ -261,10 +260,9 @@ export default function Competiciones() {
               ))}
             </Card>
 
-            {/* Inscritos */}
             <Card>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
-                <CardTitle style={{ margin:0 }}>Inscritos ({inscripciones.length}/{compSel.max_participantes})</CardTitle>
+                <div style={{ fontSize:14, fontWeight:500, color:'#f0ead6' }}>Inscritos ({inscripciones.length}/{compSel.max_participantes})</div>
                 {!bloq && <button style={S.bp} onClick={() => { setFormI({ usuario_id:'', caballo_id:'', dorsal:'' }); setShowIns(true) }}>+ Inscribir</button>}
               </div>
               {inscripciones.length === 0 && <div style={{ color:'#6b7280', fontSize:13 }}>Sin inscritos</div>}

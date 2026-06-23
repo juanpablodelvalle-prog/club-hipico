@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { signIn } from '../lib/supabase'
 import { S } from '../components/ui'
 
-console.log('URL:', import.meta.env.VITE_SUPABASE_URL)
-console.log('KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY)git add .
 
 
 export default function Login() {

@@ -1,14 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 
+export const supabase = createClient(
+  'https://ejpaejblrsjgbvcvyoog.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqcGFlamJscnNqZ2J2Y3Z5b29nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTU3OTIsImV4cCI6MjA5NzM3MTc5Mn0.3-BiUXPleC3OKk7AyUaJHQxQsYAPH6mIUIgVAmugtbc'
+)
 
-export const supabase = createClient(
-  'https://ejpaejblrsjgbvcvyoog.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqcGFlamJscnNqZ2J2Y3Z5b29nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTU3OTIsImV4cCI6MjA5NzM3MTc5Mn0.3-BiUXPleC3OKk7AyUaJHQxQsYAPH6mIUIgVAmugtbc'
-)
-export const supabase = createClient(
-  'https://ejpaejblrsjgbvcvyoog.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqcGFlamJscnNqZ2J2Y3Z5b29nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTU3OTIsImV4cCI6MjA5NzM3MTc5Mn0.3-BiUXPleC3OKk7AyUaJHQxQsYAPH6mIUIgVAmugtbc'
-)
 // ─── AUTH ────────────────────────────────────────────────────
 export const signIn = (email, password) =>
   supabase.auth.signInWithPassword({ email, password })
@@ -45,6 +41,9 @@ export const eliminarCaballo = (id) =>
 export const actualizarCaballo = (id, datos) =>
   supabase.from('caballos').update(datos).eq('id', id).select().single()
 
+export const getCaballos = () =>
+  supabase.from('caballos').select('*, usuarios(nombre, apellidos)')
+
 // ─── COMPETICIONES ───────────────────────────────────────────
 export const getCompeticiones = () =>
   supabase.from('competiciones').select('*').order('fecha')
@@ -59,7 +58,7 @@ export const actualizarCompeticion = (id, datos) =>
 export const getInscripciones = (competicion_id) =>
   supabase
     .from('inscripciones')
-    .select(`*, usuarios(id,nombre,apellidos,licencia_num), caballos(id,nombre,raza)`)
+    .select('*, usuarios(id,nombre,apellidos,licencia_num), caballos(id,nombre,raza)')
     .eq('competicion_id', competicion_id)
     .order('dorsal')
 
@@ -72,7 +71,7 @@ export const eliminarInscripcion = (id) =>
 export const getInscripcionesUsuario = (usuario_id) =>
   supabase
     .from('inscripciones')
-    .select(`*, competiciones(*), caballos(*)`)
+    .select('*, competiciones(*), caballos(*)')
     .eq('usuario_id', usuario_id)
 
 // ─── RONDAS ──────────────────────────────────────────────────
@@ -85,11 +84,11 @@ export const crearRonda = (datos) =>
 export const actualizarRonda = (id, datos) =>
   supabase.from('rondas').update(datos).eq('id', id)
 
-// ─── PUNTUACIONES TIEMPO (barrel/pole) ───────────────────────
+// ─── PUNTUACIONES TIEMPO ─────────────────────────────────────
 export const getPuntuacionesTiempo = (ronda_id) =>
   supabase
     .from('puntuaciones_tiempo')
-    .select(`*, inscripciones(*, usuarios(nombre,apellidos), caballos(nombre))`)
+    .select('*, inscripciones(*, usuarios(nombre,apellidos), caballos(nombre))')
     .eq('ronda_id', ronda_id)
 
 export const upsertPuntuacionTiempo = (datos) =>
@@ -102,7 +101,7 @@ export const upsertPuntuacionTiempo = (datos) =>
 export const getPuntuacionesTrail = (ronda_id) =>
   supabase
     .from('puntuaciones_trail')
-    .select(`*, puntuaciones_trail_obstaculos(*), inscripciones(*, usuarios(nombre,apellidos), caballos(nombre))`)
+    .select('*, puntuaciones_trail_obstaculos(*), inscripciones(*, usuarios(nombre,apellidos), caballos(nombre))')
     .eq('ronda_id', ronda_id)
     .order('puntuacion_final', { ascending: false })
 
@@ -138,7 +137,7 @@ export const upsertPuntuacionTrail = async ({ ronda_id, inscripcion_id, tiempo_r
 export const getResultados = (competicion_id) =>
   supabase
     .from('resultados')
-    .select(`*, inscripciones(dorsal, usuarios(nombre,apellidos), caballos(nombre))`)
+    .select('*, inscripciones(dorsal, usuarios(nombre,apellidos), caballos(nombre))')
     .eq('competicion_id', competicion_id)
     .order('posicion_final')
 
@@ -147,7 +146,3 @@ export const generarResultados = (competicion_id, modalidad) =>
     modalidad === 'trail' ? 'generar_resultado_trail' : 'generar_resultado_tiempo',
     { p_competicion_id: competicion_id }
   )
-
-// ─── ALIAS compatibilidad ────────────────────────────────────
-export const getCaballos = () =>
-  supabase.from('caballos').select('*, usuarios(nombre, apellidos)').eq('activo', true)
