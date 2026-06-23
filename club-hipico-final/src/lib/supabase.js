@@ -1,9 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 
-/*export const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-)*/
+
+export const supabase = createClient(
+  'https://ejpaejblrsjgbvcvyoog.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqcGFlamJscnNqZ2J2Y3Z5b29nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTU3OTIsImV4cCI6MjA5NzM3MTc5Mn0.3-BiUXPleC3OKk7AyUaJHQxQsYAPH6mIUIgVAmugtbc'
+)
 export const supabase = createClient(
   'https://ejpaejblrsjgbvcvyoog.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqcGFlamJscnNqZ2J2Y3Z5b29nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTU3OTIsImV4cCI6MjA5NzM3MTc5Mn0.3-BiUXPleC3OKk7AyUaJHQxQsYAPH6mIUIgVAmugtbc'
