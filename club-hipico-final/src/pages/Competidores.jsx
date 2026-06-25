@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getUsuarios, crearUsuario, actualizarUsuario, crearCaballo, eliminarCaballo, supabase } from '../lib/supabase'
-import { S, Badge, Card, Field, Row, Spinner, TableWrap, Th, Td, BtnRow, PassBox, CabChip, Grid2 } from '../components/ui'
+import { S, Badge, Card, Field, Spinner, TableWrap, Th, Td, BtnRow, PassBox, CabChip, Grid2 } from '../components/ui'
 
 function genPass() {
   const c = 'abcdefghijkmnpqrstuvwxyz23456789'
@@ -46,40 +46,63 @@ export default function Competidores() {
     setError('')
     if (!formU.nombre.trim()) { setError('El nombre es obligatorio'); return }
     if (!formU.email.trim())  { setError('El email es obligatorio'); return }
-    if (usuarios.find(u => u.email === formU.email.trim())) { setError('Ya existe un usuario con ese email'); return }
+    if (usuarios.find(u => u.email === formU.email.trim().toLowerCase())) {
+      setError('Ya existe un usuario con ese email'); return
+    }
 
     setGuardando(true)
     const pass = genPass()
 
     try {
-      // 1. Crear en Supabase Auth
+      // Guardar sesión actual del admin
+      const { data: { session: adminSession } } = await supabase.auth.getSession()
+
+      // Crear usuario en Auth — esto cambia la sesión temporalmente
       const { data: authData, error: authErr } = await supabase.auth.signUp({
-        email: formU.email.trim(),
+        email: formU.email.trim().toLowerCase(),
         password: pass,
         options: { emailRedirectTo: window.location.origin }
       })
-      if (authErr) { setError('Error: ' + authErr.message); setGuardando(false); return }
+
+      if (authErr) {
+        setError('Error al crear cuenta: ' + authErr.message)
+        setGuardando(false)
+        return
+      }
 
       const auth_id = authData?.user?.id
 
-      // 2. Confirmar usuario automáticamente
+      // Confirmar usuario automáticamente
       if (auth_id) {
         await supabase.rpc('confirm_user', { user_id: auth_id })
       }
 
-      // 3. Crear perfil en tabla usuarios
+      // Restaurar sesión del admin inmediatamente
+      if (adminSession) {
+        await supabase.auth.setSession({
+          access_token: adminSession.access_token,
+          refresh_token: adminSession.refresh_token,
+        })
+      }
+
+      // Crear perfil en tabla usuarios
       const { data: newUser, error: dbErr } = await crearUsuario({
         auth_id,
         nombre: formU.nombre.trim(),
         apellidos: formU.apellidos.trim(),
-        email: formU.email.trim(),
+        email: formU.email.trim().toLowerCase(),
         telefono: formU.telefono.trim(),
         rol: formU.rol,
         licencia_num: formU.licencia_num.trim() || null,
       })
-      if (dbErr) { setError('Error al guardar: ' + dbErr.message); setGuardando(false); return }
 
-      // 4. Crear caballos
+      if (dbErr) {
+        setError('Error al guardar perfil: ' + dbErr.message)
+        setGuardando(false)
+        return
+      }
+
+      // Crear caballos si los hay
       if (formU.rol === 'competidor' && tmpCabs.length > 0 && newUser?.id) {
         for (const cab of tmpCabs) {
           await crearCaballo({
@@ -91,7 +114,7 @@ export default function Competidores() {
         }
       }
 
-      // 5. Mostrar contraseña
+      // Mostrar contraseña generada
       setPassGen(pass)
       setPassShown(true)
       setShowNew(false)
